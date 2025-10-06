@@ -1,0 +1,13 @@
+flask
+python-dotenv
+pillow
+requests
+runwayml
+openai
+torch
+torchvision
+timm
+scikit-learn
+pandas
+opencv-python
+matplotlib

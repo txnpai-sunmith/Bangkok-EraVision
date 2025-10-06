@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangkok EraVision</title>
+    <link rel="icon" type="image/png" href="static/images/headlogo.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+Pro:wght@300;400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f2efe6;
+            color: #3d3d3d;
+            line-height: 1.6;
+            padding-bottom: 200px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f2efe6;
+        }
+
+        .header-subtext {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #8b8b8b;
+            text-align: center;
+        }
+ 
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        .logo-placeholder {
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            font-size: 32px;
+            color: #8b7355;
+            text-align: center;
+        }
+        
+        /* Navigation */
+        .nav-container {
+            border-top: 2px solid #8b7355;
+            border-bottom: 2px solid #8b7355;
+            background-color: #f2efe6;
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+        
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .nav-left {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .nav-link {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #3d3d3d;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            border-bottom-color: #8b7355;
+            color: #8b7355;
+        }
+        
+        .nav-link.active {
+            border-bottom-color: #8b7355;
+            color: #8b7355;
+        }
+        
+        .language-selector {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 16px;
+            color: #3d3d3d;
+            background: none;
+            border: 1px solid #8b7355;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Location Selector */
+        .location-selector {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #8b7355;
+            border-radius: 6px;
+            background-color: #faf9f6;
+            margin-bottom: 30px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-size: 16px;
+            color: #3d3d3d;
+            cursor: pointer;
+        }
+        
+        .location-selector:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .location-selector.error {
+            border-color: #e74c3c;
+        }
+
+        .location-error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .location-error.show {
+            display: block;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            margin-bottom: 40px;
+        }
+        
+        .hero-title {
+            background-color: #3d3d3d;
+            color: #f2efe6;
+            text-align: center;
+            padding: 2px;
+            margin-bottom: 30px;
+            font-family: 'TS-Prachachon-NP', serif;
+            font-size: 58px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        
+        .hero-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            font-family: 'PspimpdeedII', monospace;
+            margin-bottom: 40px;
+        }
+        
+        .hero-image {
+            flex: 0 0 300px;
+            height: 200px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .hero-text {
+            flex: 1;
+            padding: 20px 0;
+        }
+        
+        .hero-text p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #5d5d5d;
+        }
+        
+        .read-more {
+            color: #8b7355;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid #8b7355;
+        }
+        
+        .read-more:hover {
+            color: #6d5d4a;
+            border-bottom-color: #6d5d4a;
+        }
+        
+        /* Divider */
+        .divider {
+            text-align: center;
+            margin: 50px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #8b7355;
+        }
+        
+        .divider-icon {
+            background-color: #f2efe6;
+            padding: 0 20px;
+            font-size: 24px;
+            color: #8b7355;
+        }
+        
+        /* Upload Container */
+        .upload-container {
+            border: 3px solid #8b7355;
+            border-radius: 15px;
+            padding: 40px;
+            background-color: #faf9f6;
+            margin-bottom: 50px;
+        }
+        
+        .form-group {
+            margin-bottom: 35px;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #3d3d3d;
+        }
+        
+        .upload-area {
+            border: 3px dashed #8b7355;
+            border-radius: 12px;
+            padding: 50px 20px;
+            text-align: center;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .upload-area:hover {
+            border-color: #6d5d4a;
+            background-color: #f8f6f1;
+            transform: scale(1.01);
+        }
+        
+        .upload-area.dragover {
+            border-color: #d4af37;
+            background-color: #fefdf8;
+            border-style: solid;
+            transform: scale(1.02);
+        }
+
+        .upload-area.file-selected {
+            border-color: #d4af37;
+            background-color: #fefdf8;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #8b7355;
+            margin-bottom: 20px;
+            pointer-events: none;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            color: #5d5d5d;
+            margin-bottom: 10px;
+            pointer-events: none;
+        }
+        
+        .upload-subtext {
+            font-size: 14px;
+            color: #8b8b8b;
+            margin-bottom: 30px;
+            pointer-events: none;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-input-label {
+            background-color: #8b7355;
+            color: #f2efe6;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .file-input-label:hover {
+            background-color: #6d5d4a;
+            transform: translateY(-2px);
+        }
+
+        .file-input-label:active {
+            transform: translateY(0);
+        }
+        
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #faf9f6;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #8b7355;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #6d5d4a;
+        }
+
+        .modal-video-frame {
+            border: 2px solid #000000;
+            border-radius: 3px;
+            background-color: rgba(255, 255, 255, 0);
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-video {
+            width: 100%;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .modal-disclaimer {
+            font-size: 11px;
+            color: #8b8b8b;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-location-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #3d3d3d;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-location-description {
+            font-size: 15px;
+            color: #5d5d5d;
+            line-height: 1.8;
+            text-align: left;
+            padding: 0 10px;
+        }
+        
+        /* Message Styles */
+        .message {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #8b7355;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-left {
+                gap: 30px;
+            }
+            
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-image {
+                flex: none;
+                width: 100%;
+            }
+            
+            .hero-title {
+                font-size: 24px;
+                padding: 15px;
+            }
+            
+            .upload-area {
+                padding: 40px 15px;
+                min-height: 250px;
+            }
+            
+            .form-group-tight {
+                margin-bottom: 20px;
+            }
+            
+            .generate-btn-wrapper {
+                margin-top: 30px;
+                text-align: center;
+            }
+
+            .upload-area.file-selected { 
+                border-color: #d4af37;
+                background-color: #fefdf8;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+                width: 95%;
+            }
+
+            .modal-location-name {
+                font-size: 20px;
+            }
+
+            .modal-location-description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<div class="header">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/headlogo.png') }}" alt="Bangkok EraVision Logo" width="80" height="80">
+    </div>
+    <p class="header-subtext"></p>
+</div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav">
+            <div class="nav-left">
+                <a href="#" class="nav-link active">Home</a>
+                <a href="#" class="nav-link">Map</a>
+                <a href="#" class="nav-link">About Us</a>
+            </div>
+            <select class="language-selector" title="Select language" aria-label="Language selection">
+                <option>ENG</option>
+                <option>TH</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">What is Bangkok EraVision?</h1>
+            
+            <div class="hero-content">
+                <div class="hero-image">
+                    <img src="{{ url_for('static', filename='images/herocontentpics.jpg') }}" alt="Hero Image">
+                </div>
+                <div class="hero-text">
+                    <p>Bangkok EraVision is a website that takes you back to Phra Nakhon in the 1960s through a fresh perspective using city simulation technology...</p>
+                    <p>Experience the charm of old Bangkok through our advanced AI technology that transforms your photos into authentic 1960s style memories.</p>
+                    <a href="#" class="read-more">Read more at About Us →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span class="divider-icon">❦</span>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            {% if message %}
+                <div class="message {{ 'success' if 'success' in message.lower() else 'error' }}">{{ message }}</div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="upload-container">
+                    <!-- Location Selection -->
+                    <div class="form-group form-group-tight">
+                        <div class="section-title">Choose a location</div>
+                        <select class="location-selector" id="locationSelect" title="Choose Bangkok location" aria-label="Select Bangkok location" name="location">
+                            <option value="">Select a Bangkok location...</option>
+                            <option value="ratchadamnoen-democracy">Ratchadamnoen Avenue – Democracy Monument</option>
+                            <option value="sala-chalermkrung">Sala Chalermkrung Royal Theatre</option>
+                            <option value="giant-swing-wat-suthat">Giant Swing – Wat Suthat</option>
+                            <option value="khao-san">Khao San Road</option>
+                            <option value="phra-sumen-santichaiprakan">Phra Sumen Fort – Santichaiprakan Park</option>
+                            <option value="national-museum">National Museum Bangkok</option>
+                            <option value="yaowarat">Yaowarat (Chinatown)</option>
+                            <option value="sanam-luang">Sanam Luang (Royal Field)</option>
+                        </select>
+                        <div class="location-error" id="locationError">Please choose your location first</div>
+                    </div>
+
+                    <!-- Photo Upload -->
+                    <div class="form-group form-group-tight">
+                        <div class="section-title">Upload your Photo</div>
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Drop your image here or click to browse</div>
+                            <div class="upload-subtext">Supports JPG, PNG, WebP up to 10MB</div>
+                            
+                            <input type="file" id="image" name="image" accept="image/*" class="file-input" title="Upload an image file">
+                            <label for="image" class="file-input-label">Choose File</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="generate-btn-wrapper">
+                    <button type="submit" class="generate-btn" id="generateBtn">Generate</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading Animation -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Transforming your image to 1960s Bangkok...</p>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal" data-location="{{ request.form.get('location', '') if video_file else '' }}">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            
+            <div class="modal-video-frame">
+                <video class="modal-video" id="modalVideo" controls loop autoplay muted>
+                    {% if video_file %}
+                    <source src="{{ url_for('video') }}" type="video/mp4">
+                    {% endif %}
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <p class="modal-disclaimer">* These created images are only simulations and technological reconstructions and aren't images or facts of the places in the 1960s.</p>
+
+            <h3 class="modal-location-name" id="modalLocationName"></h3>
+
+            <div class="modal-location-description" id="modalLocationDescription"></div>
+        </div>
+    </div>
+
+    <script>
+        // Location descriptions - คุณสามารถแก้ไขเนื้อหาตรงนี้ได้
+        const locationDescriptions = {
+            'ratchadamnoen-democracy': 'Ratchadamnoen Avenue was designed by King Rama V in the late 19th century, inspired by the grand boulevards of Europe. In the 1960s, this historic avenue connected the Grand Palace to Dusit Palace and served as the heart of Bangkok\'s political and ceremonial life. The Democracy Monument, completed in 1939, stands as a symbol of Thailand\'s transition to constitutional monarchy.',
+            'sala-chalermkrung': 'Sala Chalermkrung Royal Theatre, built in 1933, was Thailand\'s first cinema with air conditioning and modern amenities. During the 1960s, it was the premier venue for theatrical performances and traditional Thai masked drama (Khon). The Art Deco architecture made it one of Bangkok\'s most glamorous entertainment destinations.',
+            'giant-swing-wat-suthat': 'The Giant Swing (Sao Ching Cha) was originally used for a Brahmin ceremony until 1935. In the 1960s, it stood as an iconic landmark in front of Wat Suthat, one of Bangkok\'s oldest and most beautiful temples. The area was bustling with local vendors and worshippers, maintaining its spiritual significance.',
+            'khao-san': 'In the 1960s, Khao San Road was a quiet residential area with rice warehouses, which gave it its name (Khao San means "milled rice"). The street had not yet transformed into the backpacker haven it would become in later decades. Local families lived in traditional wooden houses along this tree-lined street.',
+            'phra-sumen-santichaiprakan': 'Phra Sumen Fort, one of only two remaining forts from Bangkok\'s 14 original defensive fortresses, stood guard along the Chao Phraya River. In the 1960s, the area around the fort was less developed, offering peaceful riverside views. Santichaiprakan Park was a quiet retreat for locals seeking respite from the city.',
+            'national-museum': 'The National Museum Bangkok, established in 1874, housed Thailand\'s most extensive collection of art and artifacts. During the 1960s, it served as an important educational institution, preserving Thai culture and history during a period of rapid modernization. The museum grounds, formerly part of the Wang Na Palace, retained their regal atmosphere.',
+            'yaowarat': 'Yaowarat, Bangkok\'s Chinatown, was already a vibrant commercial hub in the 1960s. The streets were lined with gold shops, traditional Chinese medicine stores, and food vendors. Neon signs in Chinese characters illuminated the narrow lanes, creating a distinctive atmosphere that blended Thai and Chinese cultures.',
+            'sanam-luang': 'Sanam Luang (The Royal Field) served as Bangkok\'s ceremonial center in the 1960s. This vast open space hosted royal ceremonies, including cremations and the annual Royal Ploughing Ceremony. Locals also used it for recreation, flying kites and gathering for festivals, making it both sacred and communal space.'
+        };
+
+        // Get location display name
+        function getLocationDisplayName(value) {
+            const select = document.getElementById('locationSelect');
+            const option = select.querySelector(`option[value="${value}"]`);
+            return option ? option.textContent : '';
+        }
+
+        // File upload validation and handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('image');
+        const form = document.getElementById('uploadForm');
+        const generateBtn = document.getElementById('generateBtn');
+        const loading = document.getElementById('loading');
+        const locationSelect = document.getElementById('locationSelect');
+        const locationError = document.getElementById('locationError');
+        const resultModal = document.getElementById('resultModal');
+        const modalClose = document.getElementById('modalClose');
+
+        // Check if location is selected before allowing file selection
+        function validateLocationSelected() {
+            if (!locationSelect.value) {
+                locationError.classList.add('show');
+                locationSelect.classList.add('error');
+                return false;
+            }
+            locationError.classList.remove('show');
+            locationSelect.classList.remove('error');
+            return true;
+        }
+
+        // Location select change event
+        locationSelect.addEventListener('change', () => {
+            if (locationSelect.value) {
+                locationError.classList.remove('show');
+                locationSelect.classList.remove('error');
+            }
+        });
+
+        // Click anywhere in upload area to select file
+        uploadArea.addEventListener('click', (e) => {
+            // Don't trigger if clicking on the label itself
+            if (e.target.classList.contains('file-input-label')) {
+                return;
+            }
+            
+            if (!validateLocationSelected()) {
+                e.stopPropagation();
+                return;
+            }
+            
+            // Trigger file input click
+            fileInput.click();
+        });
+
+        // Prevent default click on label to avoid double trigger
+        document.querySelector('.file-input-label').addEventListener('click', (e) => {
+            if (!validateLocationSelected()) {
+                e.preventDefault();
+                return;
+            }
+        });
+
+        // Drag and drop events
+        uploadArea.addEventListener('dragover', (e) => {
+            if (!validateLocationSelected()) {
+                e.preventDefault();
+                return;
+            }
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            if (!validateLocationSelected()) {
+                return;
+            }
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateUploadArea(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                updateUploadArea(fileInput.files[0]);
+            }
+        });
+
+        // Update upload area when file is selected
+        function updateUploadArea(file) {
+            const uploadText = uploadArea.querySelector('.upload-text');
+            uploadText.textContent = `Selected: ${file.name}`;
+            uploadArea.classList.add('file-selected');
+        }
+
+        // Form submission with loading animation
+        form.addEventListener('submit', (e) => {
+            if (!validateLocationSelected()) {
+                e.preventDefault();
+                return;
+            }
+            
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+            loading.style.display = 'block';
+        });
+
+        // Show modal if video exists
+        window.addEventListener('load', () => {
+            const modal = document.getElementById('resultModal');
+            const selectedLocation = modal.getAttribute('data-location');
+            const videoSource = document.querySelector('#modalVideo source');
+            
+            // Check if we have a video result to show
+            if (selectedLocation && videoSource && videoSource.src) {
+                showResultModal(selectedLocation);
+            }
+        });
+
+        // Show modal function
+        function showResultModal(locationValue) {
+            const locationName = getLocationDisplayName(locationValue);
+            const description = locationDescriptions[locationValue] || 'Experience the historic charm of this iconic Bangkok location from the 1960s.';
+            
+            document.getElementById('modalLocationName').textContent = locationName;
+            document.getElementById('modalLocationDescription').textContent = description;
+            
+            resultModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        modalClose.addEventListener('click', () => {
+            resultModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside
+        resultModal.addEventListener('click', (e) => {
+            if (e.target === resultModal) {
+                resultModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
