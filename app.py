@@ -8,13 +8,18 @@ import requests
 from runwayml import RunwayML, TaskFailedError
 import glob
 
+from dotenv import load_dotenv
+load_dotenv()
+
+from classifier import check_image_category
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "uploads"
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # --- API Keys ---
-OPENAI_API_KEY = "sk-proj-xxxxxxxxx"
-RUNWAY_API_KEY = "key_xxxxxxxxxxxxx"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+RUNWAY_API_KEY = os.getenv("RUNWAY_API_KEY")
 
 openai.api_key = OPENAI_API_KEY
 runway_client = RunwayML(api_key=RUNWAY_API_KEY)
@@ -37,13 +42,12 @@ def get_next_filename(folder, prefix="BangkokEra", ext=".png"):
     return os.path.join(folder, f"{prefix}{next_num:03d}{ext}")
 
 # --- ฟังก์ชันแปลงภาพ OpenAI ---
-def convert_image_to_1960s(file):
+def convert_image_to_1960s(image_path):
     allowed_exts = (".png", ".jpg", ".jpeg", ".webp")
-    if not file.filename.lower().endswith(allowed_exts):
+    if not image_path.lower().endswith(allowed_exts):
         raise ValueError("Only PNG, JPG, JPEG, or WebP images are supported.")
 
-    file.seek(0)
-    img = Image.open(file)
+    img = Image.open(image_path)
     if img.mode != "RGB":
         img = img.convert("RGB")
 
@@ -62,6 +66,7 @@ def convert_image_to_1960s(file):
         return base64.b64decode(response.data[0].b64_json)
     else:
         raise ValueError("OpenAI did not return valid image data.")
+
 
 # --- ฟังก์ชันสร้างวิดีโอ Runway ---
 def generate_video_from_image(img_bytes, output_path="output.mp4"):
@@ -92,6 +97,8 @@ def generate_video_from_image(img_bytes, output_path="output.mp4"):
     return output_path
 
 # --- Flask routes ---
+from classifier import check_image_category
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     message = ""
@@ -99,6 +106,7 @@ def index():
     video_file = None
 
     if request.method == "POST":
+        place_selected = request.form.get("location")  # ชื่อใน select dropdown
         if "image" not in request.files:
             message = "No file uploaded."
         else:
@@ -107,23 +115,33 @@ def index():
                 message = "No file selected."
             else:
                 try:
-                    # แปลงภาพด้วย OpenAI
-                    img_bytes = convert_image_to_1960s(file)
+                    # save temporary file
+                    temp_path = os.path.join(app.config['UPLOAD_FOLDER'], "temp_upload.png")
+                    file.save(temp_path)
 
-                    # กำหนดโฟลเดอร์สำหรับเก็บไฟล์
-                    images_folder = os.path.join(app.config['UPLOAD_FOLDER'], "images_database")
-                    videos_folder = os.path.join(app.config['UPLOAD_FOLDER'], "videos_database")
-                    os.makedirs(images_folder, exist_ok=True)
-                    os.makedirs(videos_folder, exist_ok=True)
+                    # --- ตรวจ image classification ---
+                    confidence = check_image_category(temp_path, place_selected)
+                    threshold = 0.8
+                    if confidence < threshold:
+                        message = f"ภาพนี้อาจไม่ใช่ {place_selected}"
+                        img_file = temp_path
+                    else:
+                        # ผ่านแล้ว → แปลงรูปด้วย OpenAI / LoRA
+                        img_bytes = convert_image_to_1960s(temp_path)
 
-                    # สร้างชื่อไฟล์อัตโนมัติ
-                    output_img_path = get_next_filename(images_folder, ext=".png")
-                    with open(output_img_path, "wb") as f:
-                        f.write(img_bytes)
-                    img_file = output_img_path
+                        # สร้างโฟลเดอร์และ save
+                        images_folder = os.path.join(app.config['UPLOAD_FOLDER'], "images_database")
+                        videos_folder = os.path.join(app.config['UPLOAD_FOLDER'], "videos_database")
+                        os.makedirs(images_folder, exist_ok=True)
+                        os.makedirs(videos_folder, exist_ok=True)
 
-                    output_video_path = get_next_filename(videos_folder, ext=".mp4")
-                    video_file = generate_video_from_image(img_bytes, output_video_path)
+                        output_img_path = get_next_filename(images_folder, ext=".png")
+                        with open(output_img_path, "wb") as f:
+                            f.write(img_bytes)
+                        img_file = output_img_path
+
+                        output_video_path = get_next_filename(videos_folder, ext=".mp4")
+                        video_file = generate_video_from_image(img_bytes, output_video_path)
 
                 except Exception as e:
                     message = f"Error: {str(e)}"
